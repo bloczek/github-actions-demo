@@ -3,6 +3,7 @@ name: Deployment
 on:
   workflow_run:
     workflows: ["Flask App Tests"] # The name of the workflow that need to be completed before this one starts
+    branches: [main, test]
     types:
       - completed # The  workflow will be triggered when the workflow named 'Flask App Tests' is completed
 jobs:
