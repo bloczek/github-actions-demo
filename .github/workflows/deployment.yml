@@ -1,0 +1,25 @@
+name: Deployment
+
+on:
+  workflow_run:
+    workflows: ["Flask App Tests"] # The name of the workflow that need to be completed before this one starts
+    types:
+      - completed # The  workflow will be triggered when the workflow named 'Flask App Tests' is completed
+jobs:
+  deploy:
+    # The job will run only if the previous job is successful
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
+
+    - name: Create GitHub Release
+      uses: actions/create-release@v1
+      with:
+        tag_name: ${{ github.sha }} # Adding dynamical tag based on SHA hash
+        release_name: 'Deployment Release'
+        body: 'Deployment triggered by successful test run'
+        draft: false
+        prerelease: false
