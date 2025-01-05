@@ -12,6 +12,7 @@ def return_backwards_string(random_string):
 
 @app.route('/get-mode')
 def get_mode():
+    raise Exception('This is an exception')
     return os.getenv('MODE')
 
 if __name__ == '__main__':
