@@ -16,7 +16,7 @@ jobs:
                 working-directory: ./app/
         strategy:
             matrix:
-                python-version: [3.13]
+                python-version: [3.13.1]
         env:
             MODE: "dev"
 
