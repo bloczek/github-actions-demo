@@ -7,11 +7,12 @@ name: Deployment
 #       - completed # The  workflow will be triggered when the workflow named 'Flask App Tests' is completed
 
 on:
-    pull_request:
-        branches:
-            - main
+    workflow_run:
+      workflows: [Flask App Tests]
+      types: [completed]
+  
 jobs:
-  deploy:
+  deployment:
     # The job will run only if the previous job is successful
     if: ${{ github.event.workflow_run.conclusion == 'success' }}
     runs-on: ubuntu-latest
@@ -28,4 +29,3 @@ jobs:
         body: 'Deployment triggered by successful test run'
         draft: false
         prerelease: false
-        # The token ... 
