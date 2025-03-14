@@ -83,7 +83,7 @@ jobs:
     - name: Wersjonowanie pakietu binarnego
       id: get_version
       run: |
-      
+
         VERSION=$(python -c "import tomli; print(tomli.load(open('pyproject.toml', 'rb'))['tool']['poetry']['version'])")
         echo "Znaleziona wersja: $VERSION"
 
@@ -95,7 +95,19 @@ jobs:
     #   uses: pypa/gh-action-pypi-publish@release/v1
     #   with:
     #     password: ${{ secrets.PYPI_API_TOKEN }}
+
+    - name: Przygotowanie .pypirc dla GitHub Packages
+      run: |
+        echo "[distutils]" > ~/.pypirc
+        echo "index-servers = github" >> ~/.pypirc
+        echo "[github]" >> ~/.pypirc
+        echo "repository = https://github.com/${{ github.repository_owner }}/${{ github.event.repository.name }}/packages" >> ~/.pypirc
+        echo "username = ${{ github.repository_owner }}" >> ~/.pypirc
+        echo "password = ${{ secrets.GITHUB_TOKEN }}" >> ~/.pypirc
     
+    - name: Publikacja do GitHub Packages
+      run: twine upload --repository github dist/*
+        
     - name: Zapisz pliki dystrybucyjne jako artifacts
       uses: actions/upload-artifact@v4
       with:
