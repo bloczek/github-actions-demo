@@ -87,9 +87,9 @@ jobs:
     #   with:
     #     password: ${{ secrets.PYPI_API_TOKEN }}
     
-    - name: Zapisz pliki dystrybucyjne jako artifacts
-      uses: actions/upload-artifact@v3
-      with:
-        name: dist-files
-        path: dist/
-        retention-days: 80
+    # - name: Zapisz pliki dystrybucyjne jako artifacts
+    #   uses: actions/upload-artifact@v3
+    #   with:
+    #     name: dist-files
+    #     path: dist/
+    #     retention-days: 80
