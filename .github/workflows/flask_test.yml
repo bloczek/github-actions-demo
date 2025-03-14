@@ -63,7 +63,7 @@ jobs:
 #     - name: Testowanie
 #       run: python -m unittest discover -s ../tests -p '*_test.py'
 
-  build-and-deploy:
+  deploy:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
@@ -92,4 +92,4 @@ jobs:
       with:
         name: dist-files
         path: dist/
-        retention-days: 90
+        retention-days: 80
