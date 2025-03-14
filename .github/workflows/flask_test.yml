@@ -114,8 +114,8 @@ jobs:
         # Publikacja pakietu
         poetry publish -r github
     
-    - name: Publikacja do GitHub Packages
-      run: twine upload --repository github dist/*
+    # - name: Publikacja do GitHub Packages
+    #   run: twine upload --repository github dist/*
         
     - name: Zapisz pliki dystrybucyjne jako artifacts
       uses: actions/upload-artifact@v4
