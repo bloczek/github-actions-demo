@@ -103,7 +103,7 @@ jobs:
         echo "[github]" >> ~/.pypirc
         echo "repository = https://github.com/${{ github.repository_owner }}/${{ github.event.repository.name }}/packages" >> ~/.pypirc
         echo "username = ${{ github.repository_owner }}" >> ~/.pypirc
-        echo "password = ${{ secrets.GITHUB_TOKEN }}" >> ~/.pypirc
+        echo "password = ${{ secrets.PACKAGES_TOKEN }}" >> ~/.pypirc
     
     - name: Publikacja do GitHub Packages
       run: twine upload --repository github dist/*
