@@ -83,7 +83,8 @@ jobs:
     - name: Wersjonowanie pakietu binarnego
       id: get_version
       run: |
-        VERSION=$(python -c "import tomli; print(tomli.load(open('pyproject.toml', 'rb'))['project']['version'])")
+      
+        VERSION=$(python -c "import tomli; print(tomli.load(open('pyproject.toml', 'rb'))['tool']['poetry']['version'])")
         echo "Znaleziona wersja: $VERSION"
 
         echo "version=$VERSION" >> $GITHUB_OUTPUT
