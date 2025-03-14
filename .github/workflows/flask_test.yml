@@ -95,6 +95,6 @@ jobs:
     - name: Zapisz pliki dystrybucyjne jako artifacts
       uses: actions/upload-artifact@v4
       with:
-        name: dist-files
+        name: dist-files-v${{ steps.get_version.outputs.version }}
         path: dist/
         retention-days: 80
