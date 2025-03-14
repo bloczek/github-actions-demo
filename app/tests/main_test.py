@@ -1,4 +1,4 @@
-from main import return_backwards_string, get_mode
+from app.src.main import return_backwards_string, get_mode
 import unittest
 import os
 
