@@ -108,9 +108,9 @@ jobs:
     - name: Publikacja do GitHub Packages
       run: |
         # Użyj poprawnego URL GitHub Packages
-        poetry config repositories.github https://pypi.pkg.github.com/bloczek
+        poetry config repositories.github https://pypi.pkg.github.com/${{ github.repository_owner }}
         # Użyj GITHUB_TOKEN z właściwymi uprawnieniami
-        poetry config http-basic.github ${{ github.repository_owner }} ${{ secrets.GITHUB_TOKEN }}
+        poetry config http-basic.github ${{ github.repository_owner }} ${{ secrets.PACKAGES_TOKEN}}
         # Publikacja pakietu
         poetry publish -r github
     
