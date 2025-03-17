@@ -163,7 +163,7 @@ jobs:
 
     - name: Aktualizacja pliku lock
       run: |
-        poetry lock --no-update
+        poetry lock
     
     - name: Instalacja zależności
       run: |
