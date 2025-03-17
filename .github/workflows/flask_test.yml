@@ -176,19 +176,25 @@ jobs:
       run: |
         poetry build
     
-    # - name: Publikacja do PyPI
-    #   run: |
-    #     poetry config pypi-token.pypi ${{ secrets.PYPI_API_TOKEN }}
-    #     poetry publish
+    - name: Sprawdź repozytorium
+      run: |
+        echo "GitHub Owner: ${{ github.repository_owner }}"
+        echo "Repository: ${{ github.repository }}"
     
     - name: Publikacja do GitHub Packages
       run: |
-        # Użyj poprawnego URL GitHub Packages
-        poetry config repositories.github https://pypi.pkg.github.com/${{ github.repository_owner }}
-        # Użyj GITHUB_TOKEN z właściwymi uprawnieniami
-        poetry config http-basic.github ${{ github.repository_owner }} ${{ secrets.PACKAGES_TOKEN }}
+        # Poprawna konfiguracja URL dla GitHub Packages
+        REPO_NAME=$(echo "${{ github.repository }}" | tr '[:upper:]' '[:lower:]')
+        echo "Używam repozytorium: $REPO_NAME"
+        
+        # Konfiguracja repozytorium
+        poetry config repositories.github https://pypi.pkg.github.com/$REPO_NAME
+        
+        # Konfiguracja autentykacji
+        poetry config http-basic.github "${{ github.actor }}" "${{ secrets.PACKAGES_TOKEN }}"
+        
         # Publikacja pakietu
-        poetry publish -r github
+        poetry publish -r github --verbose
     
     - name: Zapisz pliki dystrybucyjne jako artifacts
       uses: actions/upload-artifact@v4

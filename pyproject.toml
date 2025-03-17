@@ -23,3 +23,8 @@ repository = "https://github.com/bloczek/github-actions-demo"
 [build-system]
 requires = ["poetry-core", "wheel"]
 build-backend = "poetry.core.masonry.api"
+
+[[tool.poetry.source]]
+name = "github"
+url = "https://pypi.pkg.github.com/bloczek"
+secondary = true
