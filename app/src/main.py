@@ -3,12 +3,12 @@ from dotenv import load_dotenv
 import os   
 
 load_dotenv()
-
+# Load the .env file
 app = Flask(__name__)
 
 @app.route('/<random_string>')
 def return_backwards_string(random_string):
-    
+    #commments
     return "".join(reversed(random_string))
 
 @app.route('/get-mode')

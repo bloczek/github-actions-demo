@@ -2,16 +2,29 @@
 name = "github-actions-demo"
 version = "0.1.0"
 description = ""
-authors = ["Kuba <a5h3k14s15@gmail.com>"]
+authors = ["waasabi"]
 readme = "README.md"
+
+packages = [
+    { include = "app/src" }
+]
 
 [tool.poetry.dependencies]
 python = "^3.13"
 flask = "^3.1.0"
 python-dotenv = "^1.0.1"
 pyyaml = "^6.0.2"
+pytest = "^8.3.5"
 
+# Dodaj URL repozytorium
+[tool.poetry.urls]
+repository = "https://github.com/bloczek/github-actions-demo"
 
 [build-system]
-requires = ["poetry-core"]
+requires = ["poetry-core", "wheel"]
 build-backend = "poetry.core.masonry.api"
+
+[[tool.poetry.source]]
+name = "github"
+url = "https://pypi.pkg.github.com/bloczek"
+priority = "supplemental"
