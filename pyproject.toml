@@ -27,4 +27,4 @@ build-backend = "poetry.core.masonry.api"
 [[tool.poetry.source]]
 name = "github"
 url = "https://pypi.pkg.github.com/bloczek"
-secondary = true
+priority = "supplemental"
