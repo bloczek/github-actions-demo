@@ -160,6 +160,10 @@ jobs:
     - name: Konfiguracja Poetry
       run: |
         poetry config virtualenvs.create false
+
+    - name: Aktualizacja pliku lock
+      run: |
+        poetry lock --no-update
     
     - name: Instalacja zależności
       run: |
