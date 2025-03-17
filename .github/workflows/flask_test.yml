@@ -150,7 +150,7 @@ jobs:
         run: echo "Wykonuję operacje specyficzne dla gałęzi main"
 
   deploy:
-    if: ${{ github.ref == 'refs/heads/test' }}
+    if: ${{ github.ref == 'refs/heads/main' || github.ref == 'refs/heads/test' }}
     runs-on: ubuntu-latest
     permissions:
       contents: read
