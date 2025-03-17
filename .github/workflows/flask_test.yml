@@ -136,10 +136,21 @@ name: Publikacja pakietu
 on:
   push:
     branches:
+      - main
       - test
 
 jobs:
+  test:
+    if: ${{ github.ref == 'refs/heads/main' }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+      - name: Execute operations for main branch
+        run: echo "Wykonuję operacje specyficzne dla gałęzi main"
+
   deploy:
+    if: ${{ github.ref == 'refs/heads/test' }}
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -185,20 +196,20 @@ jobs:
         echo "GitHub Owner: ${{ github.repository_owner }}"
         echo "Repository: ${{ github.repository }}"
     
-    - name: Publikacja do GitHub Packages
-      run: |
-        # Poprawna konfiguracja URL dla GitHub Packages
-        REPO_NAME=$(echo "${{ github.repository }}" | tr '[:upper:]' '[:lower:]')
-        echo "Używam repozytorium: $REPO_NAME"
+    # - name: Publikacja do GitHub Packages
+    #   run: |
+    #     # Poprawna konfiguracja URL dla GitHub Packages
+    #     REPO_NAME=$(echo "${{ github.repository }}" | tr '[:upper:]' '[:lower:]')
+    #     echo "Używam repozytorium: $REPO_NAME"
         
-        # Konfiguracja repozytorium
-        poetry config repositories.github https://pypi.pkg.github.com/$REPO_NAME
+    #     # Konfiguracja repozytorium
+    #     poetry config repositories.github https://pypi.pkg.github.com/$REPO_NAME
         
-        # Konfiguracja autentykacji
-        poetry config http-basic.github "${{ github.actor }}" "${{ secrets.PACKAGES_TOKEN }}"
+    #     # Konfiguracja autentykacji
+    #     poetry config http-basic.github "${{ github.actor }}" "${{ secrets.PACKAGES_TOKEN }}"
         
-        # Publikacja pakietu
-        poetry publish -r github --verbose
+    #     # Publikacja pakietu
+    #     poetry publish -r github --verbose
     
     - name: Zapisz pliki dystrybucyjne jako artifacts
       uses: actions/upload-artifact@v4
