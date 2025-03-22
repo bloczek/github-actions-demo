@@ -1,24 +1,6 @@
-# from app.src.main import return_backwards_string, get_mode
-# import unittest
-# import os
-
-# class TestMain(unittest.TestCase):
-#     def test_return_backwards_string(self):
-#         random_string = "Hello World"
-#         random_string_reversed = "dlroW olleH"
-#         self.assertEqual(random_string_reversed,
-#                          return_backwards_string(random_string))
-        
-#     def test_get_env(self):
-#         self.assertEqual(os.environ.get("MODE"), get_mode())
-
-# if __name__ == "__main__":
-#     unittest.main()
-
-
 import os
 import pytest
-from app.src.main import app
+from src.main import app
 from flask import Flask
 from dotenv import load_dotenv
 # Tworzenie aplikacji bezpośrednio w pliku testowym
