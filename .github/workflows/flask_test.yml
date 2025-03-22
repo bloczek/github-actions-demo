@@ -131,6 +131,95 @@
 
 
 
+# name: Publikacja pakietu
+
+# on:
+#   push:
+#     branches:
+#       - main
+#       - test
+
+# jobs:
+#   test_message:
+#     if: ${{ github.ref == 'refs/heads/main' }}
+#     runs-on: ubuntu-latest
+#     steps:
+#       - name: Checkout repository
+#         uses: actions/checkout@v3
+#       - name: Execute operations for main branch
+#         run: echo "Wykonuję operacje specyficzne dla gałęzi main"
+
+#   deploy:
+#     if: ${{ github.ref == 'refs/heads/main' || github.ref == 'refs/heads/test' }}
+#     runs-on: ubuntu-latest
+#     permissions:
+#       contents: read
+#       packages: write
+#     steps:
+#     - uses: actions/checkout@v3
+    
+#     - name: Konfiguracja Pythona
+#       uses: actions/setup-python@v4
+#       with:
+#         python-version: '3.13'
+    
+#     - name: Instalacja Poetry
+#       run: |
+#         curl -sSL https://install.python-poetry.org | python3 -
+#         echo "$HOME/.local/bin" >> $GITHUB_PATH
+      
+#     - name: Konfiguracja Poetry
+#       run: |
+#         poetry config virtualenvs.create false
+
+#     - name: Aktualizacja pliku lock
+#       run: |
+#         poetry lock
+    
+#     - name: Instalacja zależności
+#       run: |
+#         poetry install --no-interaction
+    
+#     - name: Wersjonowanie pakietu
+#       id: get_version
+#       run: |
+#         VERSION=$(poetry version -s)
+#         echo "Znaleziona wersja: $VERSION"
+#         echo "version=$VERSION" >> $GITHUB_OUTPUT
+    
+#     - name: Budowanie pakietu
+#       run: |
+#         poetry build
+    
+#     - name: Sprawdź repozytorium
+#       run: |
+#         echo "GitHub Owner: ${{ github.repository_owner }}"
+#         echo "Repository: ${{ github.repository }}"
+    
+#     # - name: Publikacja do GitHub Packages
+#     #   run: |
+#     #     # Poprawna konfiguracja URL dla GitHub Packages
+#     #     REPO_NAME=$(echo "${{ github.repository }}" | tr '[:upper:]' '[:lower:]')
+#     #     echo "Używam repozytorium: $REPO_NAME"
+        
+#     #     # Konfiguracja repozytorium
+#     #     poetry config repositories.github https://pypi.pkg.github.com/$REPO_NAME
+        
+#     #     # Konfiguracja autentykacji
+#     #     poetry config http-basic.github "${{ github.actor }}" "${{ secrets.PACKAGES_TOKEN }}"
+        
+#     #     # Publikacja pakietu
+#     #     poetry publish -r github --verbose
+    
+#     - name: Zapisz pliki dystrybucyjne jako artifacts
+#       uses: actions/upload-artifact@v4
+#       with:
+#         name: dist-files-v${{ steps.get_version.outputs.version }}
+#         path: dist/
+#         retention-days: 90
+
+
+
 name: Publikacja pakietu
 
 on:
@@ -138,82 +227,95 @@ on:
     branches:
       - main
       - test
-
+  pull_request:
+    branches:
+      - main
+      - test
 jobs:
-  test:
-    if: ${{ github.ref == 'refs/heads/main' }}
+  tests:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
-      - name: Execute operations for main branch
-        run: echo "Wykonuję operacje specyficzne dla gałęzi main"
+      
+      - name: Konfiguracja Pythona
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.13'
+      
+      - name: Instalacja Poetry
+        run: |
+          curl -sSL https://install.python-poetry.org | python3 -
+          echo "$HOME/.local/bin" >> $GITHUB_PATH
+      
+      - name: Konfiguracja Poetry
+        run: |
+          poetry config virtualenvs.create false
+      
+      - name: Aktualizacja pliku lock
+        run: |
+          poetry lock
+      
+      - name: Instalacja zależności
+        run: |
+          poetry install --no-interaction
+      
+      - name: Uruchomienie testów przy użyciu pytest
+        run: |
+          pytest app/tests
 
   deploy:
+    needs: tests
     if: ${{ github.ref == 'refs/heads/main' || github.ref == 'refs/heads/test' }}
     runs-on: ubuntu-latest
     permissions:
       contents: read
       packages: write
     steps:
-    - uses: actions/checkout@v3
-    
-    - name: Konfiguracja Pythona
-      uses: actions/setup-python@v4
-      with:
-        python-version: '3.13'
-    
-    - name: Instalacja Poetry
-      run: |
-        curl -sSL https://install.python-poetry.org | python3 -
-        echo "$HOME/.local/bin" >> $GITHUB_PATH
+      - name: Checkout repository
+        uses: actions/checkout@v3
       
-    - name: Konfiguracja Poetry
-      run: |
-        poetry config virtualenvs.create false
-
-    - name: Aktualizacja pliku lock
-      run: |
-        poetry lock
-    
-    - name: Instalacja zależności
-      run: |
-        poetry install --no-interaction
-    
-    - name: Wersjonowanie pakietu
-      id: get_version
-      run: |
-        VERSION=$(poetry version -s)
-        echo "Znaleziona wersja: $VERSION"
-        echo "version=$VERSION" >> $GITHUB_OUTPUT
-    
-    - name: Budowanie pakietu
-      run: |
-        poetry build
-    
-    - name: Sprawdź repozytorium
-      run: |
-        echo "GitHub Owner: ${{ github.repository_owner }}"
-        echo "Repository: ${{ github.repository }}"
-    
-    # - name: Publikacja do GitHub Packages
-    #   run: |
-    #     # Poprawna konfiguracja URL dla GitHub Packages
-    #     REPO_NAME=$(echo "${{ github.repository }}" | tr '[:upper:]' '[:lower:]')
-    #     echo "Używam repozytorium: $REPO_NAME"
-        
-    #     # Konfiguracja repozytorium
-    #     poetry config repositories.github https://pypi.pkg.github.com/$REPO_NAME
-        
-    #     # Konfiguracja autentykacji
-    #     poetry config http-basic.github "${{ github.actor }}" "${{ secrets.PACKAGES_TOKEN }}"
-        
-    #     # Publikacja pakietu
-    #     poetry publish -r github --verbose
-    
-    - name: Zapisz pliki dystrybucyjne jako artifacts
-      uses: actions/upload-artifact@v4
-      with:
-        name: dist-files-v${{ steps.get_version.outputs.version }}
-        path: dist/
-        retention-days: 90
+      - name: Konfiguracja Pythona
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.13'
+      
+      - name: Instalacja Poetry
+        run: |
+          curl -sSL https://install.python-poetry.org | python3 -
+          echo "$HOME/.local/bin" >> $GITHUB_PATH
+      
+      - name: Konfiguracja Poetry
+        run: |
+          poetry config virtualenvs.create false
+      
+      - name: Aktualizacja pliku lock
+        run: |
+          poetry lock
+      
+      - name: Instalacja zależności
+        run: |
+          poetry install --no-interaction
+      
+      - name: Wersjonowanie pakietu
+        id: get_version
+        run: |
+          VERSION=$(poetry version -s)
+          echo "Znaleziona wersja: $VERSION"
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+      
+      - name: Budowanie pakietu
+        run: |
+          poetry build
+      
+      - name: Sprawdź repozytorium
+        run: |
+          echo "GitHub Owner: ${{ github.repository_owner }}"
+          echo "Repository: ${{ github.repository }}"
+      
+      - name: Zapisz pliki dystrybucyjne jako artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: dist-files-v${{ steps.get_version.outputs.version }}
+          path: dist/
+          retention-days: 90

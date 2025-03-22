@@ -28,3 +28,6 @@ build-backend = "poetry.core.masonry.api"
 name = "github"
 url = "https://pypi.pkg.github.com/bloczek"
 priority = "supplemental"
+
+[tool.pytest.ini_options]
+pythonpath = "app/src"
