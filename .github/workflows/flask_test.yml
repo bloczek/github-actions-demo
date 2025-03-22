@@ -227,7 +227,10 @@ on:
     branches:
       - main
       - test
-
+  pull_request:
+    branches:
+      - main
+      - test
 jobs:
   tests:
     runs-on: ubuntu-latest
