@@ -11,7 +11,6 @@ on:
       - test
 jobs:
   tests:
-    
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
@@ -113,3 +112,27 @@ jobs:
           name: dist-files-v${{ steps.get_version.outputs.version }}
           path: dist/
           retention-days: 90
+
+      # --- Kroki publikacji do JFrog Artifactory ---
+      - name: Setup JFrog CLI
+        uses: jfrog/setup-jfrog-cli@v4
+        env:
+          JF_URL: ${{ vars.JF_URL }}
+          JF_ACCESS_TOKEN: ${{ secrets.JF_ACCESS_TOKEN }}
+      
+      - name: Configure JFrog CLI for PyPI
+        run: |
+          # Konfigurujemy JFrog CLI, by używał repozytorium dla paczek Python (PyPI)
+          jf pip-config --global=true --repo-resolve=test-jfrog-package-pypi
+      
+      - name: Publish package to JFrog Artifactory
+        run: |
+          # Przesyłamy wygenerowane pliki z katalogu dist (zarówno .whl, jak i .tar.gz)
+          jf rt upload "dist/*" "test-jfrog-package-pypi/"
+      
+      - name: Publish Build Info with JFrog CLI
+        run: |
+          # Zbierz dane środowiskowe i informacje z VCS, a następnie opublikuj build info
+          jf rt build-collect-env
+          jf rt build-add-git
+          jf rt build-publish
