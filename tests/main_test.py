@@ -1,3 +1,6 @@
+"""
+Testy dla aplikacji Flask.
+"""
 import os
 import pytest
 from src.main import app
@@ -37,7 +40,6 @@ def test_return_backwards_string(client):
     expected = "olleh"
     response = client.get(f'/{test_string}')
     assert response.status_code == 200
-    # response.data zwraca bajty, dlatego dekodujemy
     assert response.data.decode() == expected
 
 def test_get_mode(client, monkeypatch):
@@ -48,4 +50,9 @@ def test_get_mode(client, monkeypatch):
     assert response.status_code == 200
     assert response.data.decode() == expected_mode
 
-
+def test_get_mode_no_env(client, monkeypatch):
+    # Usunięcie zmiennej środowiskowej MODE dla tego testu
+    monkeypatch.delenv("MODE", raising=False)
+    response = client.get("/get-mode")
+    assert response.status_code == 200
+    assert response.data.decode() == ""  # Oczekujemy pustego stringa, gdy zmienna nie jest ustawiona   
